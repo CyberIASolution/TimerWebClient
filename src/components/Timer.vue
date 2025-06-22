@@ -77,7 +77,7 @@ socket.on("elapsed", updateData);
 
 function updateState(state) {
   isRunning.value = !state.stopped && !state.paused;
-  updateData();
+  updateData(state);
 }
 
 function updateData(data) {
