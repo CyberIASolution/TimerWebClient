@@ -10,44 +10,44 @@
       </div>
 
       <div
-        class="text-5xl font-mono font-semibold text-gray-800 tracking-widest"
+        class="text-5xl font-mono font-bold text-slate-900 tracking-widest"
       >
         {{ formattedTime }}
       </div>
 
       <div class="mt-6 flex justify-center space-x-4">
-        <TimerButton
-          class="text-gray-500 bg-gray-200 hover:bg-gray-300"
+        <button-component
+          class="text-zinc-700 bg-zinc-100 hover:bg-zinc-200"
           @click="stop()"
         >
           <template #icon> <stop-icon /> </template>
           <template #label> Stop </template>
-        </TimerButton>
+        </button-component>
 
-        <TimerButton
+        <button-component
           v-if="!isRunning"
-          class="text-white bg-violet-600 hover:bg-violet-700"
+          class="text-white bg-violet-500 hover:bg-violet-600"
           @click="start()"
         >
           <template #icon> <play-icon /> </template>
           <template #label> Start </template>
-        </TimerButton>
+        </button-component>
 
-        <TimerButton
+        <button-component
           v-if="isRunning"
-          class="text-white bg-violet-600 hover:bg-violet-700"
+          class="text-white bg-violet-500 hover:bg-violet-600"
           @click="pause()"
         >
           <template #icon> <pause-icon /> </template>
           <template #label> Pause </template>
-        </TimerButton>
+        </button-component>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import TimerButton from "@/components/TimerButton.vue";
+import ButtonComponent from "@/components/ButtonComponent.vue";
 import StopIcon from "@/components/icons/Stop.vue";
 import PlayIcon from "@/components/icons/Play.vue";
 import PauseIcon from "@/components/icons/Pause.vue";
@@ -75,8 +75,8 @@ socket.on("stopped", updateState);
 socket.on("elapsed", updateData);
 
 function updateState(state) {
-  console.log("Updating state: ", state);
   isRunning.value = !state.stopped && !state.paused;
+  updateData();
 }
 
 function updateData(data) {
