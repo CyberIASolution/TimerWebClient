@@ -23,7 +23,7 @@ var intervalId = null;
 
 onMounted(() => {
   intervalId = setInterval(() => {
-    fetch("http://localhost:8080/status")
+    fetch("https://timerserver.onrender.com:8080/status")
       .then((data) => {
         isConnected.value = data.status == 200;
       })
