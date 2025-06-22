@@ -21,9 +21,11 @@ import { ref, onMounted, onUnmounted } from "vue";
 const isConnected = ref(false);
 var intervalId = null;
 
+const url = import.meta.env.VITE_SERVER_URL;
+
 onMounted(() => {
   intervalId = setInterval(() => {
-    fetch("https://timerserver.onrender.com:8080/status")
+    fetch(url+"/status")
       .then((data) => {
         isConnected.value = data.status == 200;
       })

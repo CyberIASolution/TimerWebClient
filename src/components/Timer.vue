@@ -59,7 +59,8 @@ const isRunning = ref(false);
 const connected = ref(false);
 const props = defineProps(["id"]);
 
-const socket = io("https://timerserver.onrender.com:8080");
+const url = import.meta.env.VITE_SERVER_URL;
+const socket = io(url);
 
 socket.on("connect", onConnected);
 socket.on("disconnect", onDisconnect);
