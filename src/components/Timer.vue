@@ -59,7 +59,7 @@ const isRunning = ref(false);
 const connected = ref(false);
 const props = defineProps(["id"]);
 
-const socket = io("http://localhost:8080");
+const socket = io("https://timerserver.onrender.com:8080");
 
 socket.on("connect", onConnected);
 socket.on("disconnect", onDisconnect);
