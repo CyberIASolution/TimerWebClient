@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-center justify-center">
+  <div class="flex items-start justify-center">
     <div
-      class="bg-white rounded-2xl shadow-md px-8 py-6 w-80 text-center relative"
+      class="bg-white rounded-2xl shadow-md px-8 py-6 w-80 text-center relative overflow-hidden"
     >
       <div
         class="absolute top-0 left-0 border-1 border-gray-200 rounded-tl-2xl inline-block text-lg font-semibold p-2"
@@ -9,9 +9,7 @@
         {{ $props.id }}
       </div>
 
-      <div
-        class="text-5xl font-mono font-bold text-slate-900 tracking-widest"
-      >
+      <div class="text-5xl font-mono font-bold text-slate-900 tracking-widest">
         {{ formattedTime }}
       </div>
 
@@ -42,6 +40,25 @@
           <template #label> Pause </template>
         </button-component>
       </div>
+
+      <div class="w-full h-2 relative" :class="{ 'h-14': expand }">
+        <button
+          class="absolute -right-6 top-1 cursor-pointer transition duration-300 ease-in-out"
+          :class="{ 'rotate-180': expand }"
+          @click="toggleExpand()"
+        >
+          <chevron-icon
+            class="text-gray-400 hover:scale-110 hover:text-gray-600"
+          />
+        </button>
+        <div class="pt-8">
+          <hr class="text-gray-200 mb-2" />
+          <p class="text-gray-600">
+            <strong>Frais:</strong>
+            <span>&nbsp;{{ cost }} Ar</span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -51,9 +68,11 @@ import ButtonComponent from "@/components/ButtonComponent.vue";
 import StopIcon from "@/components/icons/Stop.vue";
 import PlayIcon from "@/components/icons/Play.vue";
 import PauseIcon from "@/components/icons/Pause.vue";
+import ChevronIcon from "@/components/icons/Chevron.vue";
 
 import { ref, computed } from "vue";
 
+const expand = ref(false);
 const elapsed = ref(0);
 const isRunning = ref(false);
 const connected = ref(false);
@@ -81,7 +100,7 @@ function updateState(state) {
 }
 
 function updateData(data) {
-  if (data.elapsed) elapsed.value = data.elapsed;
+  elapsed.value = data.elapsed;
 }
 
 function start() {
@@ -105,6 +124,14 @@ function onDisconnect() {
 function onConnectionError() {
   connected.value = false;
 }
+
+function toggleExpand() {
+  expand.value = !expand.value;
+}
+
+const cost = computed(() => {
+  return Math.ceil(elapsed.value / 60000) * 10;
+});
 
 const formattedTime = computed(() => {
   const seconds = Math.floor(elapsed.value / 1000) % 60;

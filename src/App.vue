@@ -6,7 +6,7 @@
       <timer v-for="session in sessionList" :key="session" :id="session" />
     </div>
 
-    <div class="fixed bottom-0 w-full flex p-10 justify-center">
+    <div class="fixed bottom-12 left-1/2 -translate-x-1/2">
       <button-component
         class="bg-zinc-800 text-zinc-100 hover:bg-zinc-700 rounded-full px-4 py-2 text-sm shadow-lg group"
         @click="addTimer()"
