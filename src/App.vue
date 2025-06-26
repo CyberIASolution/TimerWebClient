@@ -1,5 +1,7 @@
 <template>
+
   <HeaderComp class="fixed z-1" />
+
   <main class="py-16">
     <div class="lock fixed top bottom-0 left-1/2 -translate-x-1/2 mb-10 z-1">
       <button class="btn btn-wide btn-primary" @click="addTimer">
@@ -10,11 +12,15 @@
       <TimerComp v-for="id in sessionList" :key="id" :id="id"></TimerComp>
     </div>
   </main>
+
+  <ConnectionComp />
+
 </template>
 
 <script setup>
 import HeaderComp from "@/components/HeaderComp.vue";
 import TimerComp from "@/components/TimerComp.vue";
+import ConnectionComp from "@/components/ConnectionComp.vue";
 import PlusIcon from "@/components/icons/Plus.vue";
 
 import { ref } from "vue";
