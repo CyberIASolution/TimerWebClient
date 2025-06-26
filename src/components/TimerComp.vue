@@ -1,10 +1,10 @@
 <template>
-  <button class="card card-border bg-neutral border-2 inline-flex m-6">
+  <div class="card card-border border-2 inline-flex m-6">
     <div class="card-body">
       <h2 class="card-title">{{ $props.id }}</h2>
-      <div class="btn btn-ghost h-auto p-4 text-6xl font-mono font-bold tracking-widest">
+      <button class="btn btn-ghost h-auto p-4 text-6xl font-mono font-bold tracking-widest"  @click="$emit('open', $props.id)">
         {{ formattedTime }}
-      </div>
+      </button>
       <div class="card-actions justify-around">
         <button class="btn btn-ghost" @click="stop">
           <stop-icon />
@@ -22,8 +22,7 @@
         </button>
       </div>
     </div>
-  </button>
-
+  </div>
 </template>
 
 <script setup>
@@ -34,11 +33,11 @@ import { io } from "socket.io-client";
 
 import { ref, computed } from "vue";
 
-const expand = ref(false);
 const elapsed = ref(0);
 const isRunning = ref(false);
 const connected = ref(false);
 const props = defineProps(["id"]);
+const emit = defineEmits(["open"]);
 
 const url = import.meta.env.VITE_SERVER_URL;
 const socket = io(url);
@@ -85,10 +84,6 @@ function onDisconnect() {
 
 function onConnectionError() {
   connected.value = false;
-}
-
-function toggleExpand() {
-  expand.value = !expand.value;
 }
 
 const cost = computed(() => {
