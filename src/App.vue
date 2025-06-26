@@ -1,26 +1,20 @@
 <template>
-  <main class="relative">
-    <status class="m-4" />
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-40">
-      <timer v-for="session in sessionList" :key="session" :id="session" />
+  <HeaderComp class="fixed z-1" />
+  <main class="py-16">
+    <div class="lock fixed top bottom-0 left-1/2 -translate-x-1/2 mb-10 z-1">
+      <button class="btn btn-wide btn-primary" @click="addTimer">
+        Add timer
+      </button>
     </div>
-
-    <div class="fixed bottom-12 left-1/2 -translate-x-1/2">
-      <button-component
-        class="bg-zinc-800 text-zinc-100 hover:bg-zinc-700 rounded-full px-4 py-2 text-sm shadow-lg group"
-        @click="addTimer()"
-      >
-        <template #icon> <plus-icon /> </template>
-      </button-component>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+      <TimerComp v-for="id in sessionList" :key="id" :id="id"></TimerComp>
     </div>
   </main>
 </template>
 
 <script setup>
-import Timer from "@/components/Timer.vue";
-import Status from "@/components/ConnectionStatus.vue";
-import ButtonComponent from "./components/ButtonComponent.vue";
+import HeaderComp from "@/components/HeaderComp.vue";
+import TimerComp from "@/components/TimerComp.vue";
 import PlusIcon from "@/components/icons/Plus.vue";
 
 import { ref } from "vue";
