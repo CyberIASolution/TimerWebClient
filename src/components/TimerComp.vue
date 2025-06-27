@@ -2,7 +2,10 @@
   <div class="card card-border border-2 inline-flex m-6">
     <div class="card-body">
       <h2 class="card-title">{{ $props.id }}</h2>
-      <button class="btn btn-ghost h-auto p-4 text-6xl font-mono font-bold tracking-widest"  @click="$emit('open', $props.id)">
+      <button
+        class="btn btn-ghost h-auto p-4 text-6xl font-mono font-bold tracking-widest"
+        @click="$emit('open', $props.id)"
+      >
         {{ formattedTime }}
       </button>
       <div class="card-actions justify-around">
@@ -11,12 +14,20 @@
           Stop
         </button>
 
-        <button class="btn btn-outline btn-primary" :class="{'hidden': isRunning}" @click="start">
+        <button
+          class="btn btn-outline btn-primary"
+          :class="{ hidden: isRunning }"
+          @click="start"
+        >
           <play-icon />
           Start
         </button>
 
-        <button class="btn btn-outline btn-primary" :class="{'hidden': !isRunning}" @click="pause">
+        <button
+          class="btn btn-outline btn-primary"
+          :class="{ hidden: !isRunning }"
+          @click="pause"
+        >
           <pause-icon />
           Pause
         </button>
@@ -29,15 +40,17 @@
 import StopIcon from "@/components/icons/Stop.vue";
 import PlayIcon from "@/components/icons/Play.vue";
 import PauseIcon from "@/components/icons/Pause.vue";
+import { useIdStore } from "@/stores/Id";
 import { io } from "socket.io-client";
 
-import { ref, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 
 const elapsed = ref(0);
 const isRunning = ref(false);
 const connected = ref(false);
 const props = defineProps(["id"]);
 const emit = defineEmits(["open"]);
+const idStore = useIdStore();
 
 const url = import.meta.env.VITE_SERVER_URL;
 const socket = io(url);
@@ -46,14 +59,11 @@ socket.on("connect", onConnected);
 socket.on("disconnect", onDisconnect);
 socket.on("connect_failed", onConnectionError);
 
-socket.emit("register", { id: props.id });
-socket.emit("state");
-
-socket.on("state", updateState);
-socket.on("started", updateState);
-socket.on("paused", updateState);
-socket.on("stopped", updateState);
-socket.on("elapsed", updateData);
+socket.on("status:success", updateState);
+socket.on("start:success", updateState);
+socket.on("paused:success", updateState);
+socket.on("stopped:success", updateState);
+socket.on("timer:elapsed", updateData);
 
 function updateState(state) {
   isRunning.value = !state.stopped && !state.paused;
@@ -69,9 +79,11 @@ function start() {
 }
 function pause() {
   socket.emit("pause");
+  socket.emit("status");
 }
 function stop() {
   socket.emit("stop");
+  socket.emit("status");
 }
 
 function onConnected() {
@@ -88,6 +100,15 @@ function onConnectionError() {
 
 const cost = computed(() => {
   return Math.ceil(elapsed.value / 60000) * 10;
+});
+
+onMounted(() => {
+  const registerData = JSON.stringify({
+    timerId: props.id,
+    userId: idStore.userId,
+  });
+  socket.emit("register", registerData);
+  socket.emit("status");
 });
 
 const formattedTime = computed(() => {
