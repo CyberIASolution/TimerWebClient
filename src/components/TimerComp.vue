@@ -41,7 +41,8 @@ import StopIcon from "@/components/icons/Stop.vue";
 import PlayIcon from "@/components/icons/Play.vue";
 import PauseIcon from "@/components/icons/Pause.vue";
 
-import { useIdStore } from "@/stores/Id";
+import { useTimerStore } from "@/stores/Timer.js";
+import { useIdStore } from "@/stores/Id.js";
 import { io } from "socket.io-client";
 
 import { ref, onMounted, computed } from "vue";
@@ -52,6 +53,7 @@ const connected = ref(false);
 const props = defineProps(["id"]);
 const emit = defineEmits(["open"]);
 
+const timerStore = useTimerStore();
 const idStore = useIdStore();
 
 const url = import.meta.env.VITE_SERVER_URL;
@@ -105,6 +107,7 @@ onMounted(() => {
     timerId: props.id,
     userId: idStore.userId,
   });
+  timerStore.timerList.set(props.id, elapsed);
   socket.emit("register", registerData);
   socket.emit("status");
 });

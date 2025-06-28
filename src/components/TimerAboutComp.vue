@@ -34,60 +34,35 @@ import ClockIcon from "@/components/icons/Clock.vue";
 import CashIcon from "@/components/icons/Cash.vue";
 
 import { useSettingStore } from "@/stores/Setting.js";
-import { useIdStore } from "@/stores/Id";
+import { useTimerStore } from "@/stores/Timer.js";
+import { useIdStore } from "@/stores/Id.js";
 
-import { io } from "socket.io-client";
 import { ref, computed } from "vue";
-
-const elapsed = ref(0);
 
 const props = defineProps(["timerId"]);
 const isOpen = ref(false);
 
-const idStore = useIdStore();
+const timerStore = useTimerStore();
 const setting = useSettingStore();
-
-const url = import.meta.env.VITE_SERVER_URL;
-var socket = io(url);
-
-socket.on("status:success", updateData);
-socket.on("started:success", updateData);
-socket.on("paused:success", updateData);
-socket.on("stopped:success", updateData);
-socket.on("timer:elapsed", updateData);
-
-function updateData(data) {
-  elapsed.value = data.elapsed;
-  console.log("Updating");
-}
-
-const cost = computed(() => {
-  return Math.ceil(elapsed.value / 60000) * setting.minuteCost;
-});
 
 const close = function () {
   isOpen.value = false;
-  socket.close();
 };
 
 const open = function () {
   if (!props.timerId) return;
   isOpen.value = true;
-
-  const registerData = JSON.stringify({
-    timerId: props.timerId,
-    userId: idStore.userId,
-  });
-
-  socket.emit("register", registerData);
-  socket.emit("status");
 };
 
 defineExpose({ close, open });
 
+const cost = computed(() => {
+  return Math.ceil(timerStore.timerList.get(props.timerId).value / 60000) * setting.minuteCost;
+});
+
 const formattedTime = computed(() => {
-  const seconds = Math.floor(elapsed.value / 1000) % 60;
-  const minutes = Math.floor(elapsed.value / 60000);
+  const seconds = Math.floor(timerStore.timerList.get(props.timerId).value / 1000) % 60;
+  const minutes = Math.floor(timerStore.timerList.get(props.timerId).value / 60000);
 
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 });
