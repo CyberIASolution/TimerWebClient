@@ -33,7 +33,9 @@ import InfoIcon from "@/components/icons/Info.vue";
 import ClockIcon from "@/components/icons/Clock.vue";
 import CashIcon from "@/components/icons/Cash.vue";
 
+import { useSettingStore } from "@/stores/Setting.js";
 import { useIdStore } from "@/stores/Id";
+
 import { io } from "socket.io-client";
 import { ref, computed } from "vue";
 
@@ -41,7 +43,9 @@ const elapsed = ref(0);
 
 const props = defineProps(["timerId"]);
 const isOpen = ref(false);
+
 const idStore = useIdStore();
+const setting = useSettingStore();
 
 const url = import.meta.env.VITE_SERVER_URL;
 var socket = io(url);
@@ -58,7 +62,7 @@ function updateData(data) {
 }
 
 const cost = computed(() => {
-  return Math.ceil(elapsed.value / 60000) * 10;
+  return Math.ceil(elapsed.value / 60000) * setting.minuteCost;
 });
 
 const close = function () {

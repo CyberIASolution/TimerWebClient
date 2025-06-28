@@ -40,6 +40,7 @@
 import StopIcon from "@/components/icons/Stop.vue";
 import PlayIcon from "@/components/icons/Play.vue";
 import PauseIcon from "@/components/icons/Pause.vue";
+
 import { useIdStore } from "@/stores/Id";
 import { io } from "socket.io-client";
 
@@ -50,6 +51,7 @@ const isRunning = ref(false);
 const connected = ref(false);
 const props = defineProps(["id"]);
 const emit = defineEmits(["open"]);
+
 const idStore = useIdStore();
 
 const url = import.meta.env.VITE_SERVER_URL;
@@ -97,10 +99,6 @@ function onDisconnect() {
 function onConnectionError() {
   connected.value = false;
 }
-
-const cost = computed(() => {
-  return Math.ceil(elapsed.value / 60000) * 10;
-});
 
 onMounted(() => {
   const registerData = JSON.stringify({

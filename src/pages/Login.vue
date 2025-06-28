@@ -37,11 +37,14 @@
 <script setup>
 import UserIcon from "@/components/icons/User.vue";
 import LockIcon from "@/components/icons/Lock.vue";
+import { useSettingStore } from "@/stores/Setting.js";
 import { useIdStore } from "@/stores/Id.js";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 
 const id = useIdStore();
+const setting = useSettingStore();
+
 const router = useRouter();
 const username = ref("");
 const password = ref("");
@@ -67,7 +70,10 @@ function submit() {
     .then(async (data) => {
       if (!data.ok) return;
       data = await data.json();
-      id.userId = data.id;
+
+      id.setUserId(data.id);
+      setting.setMinuteCost(data.minuteCost);
+
       router.push("/timer");
     })
     .catch((err) => {
