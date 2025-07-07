@@ -2,32 +2,27 @@
   <div class="card card-border border-2 inline-flex m-6">
     <div class="card-body">
       <h2 class="card-title">{{ $props.id }}</h2>
-      <button
-        class="btn btn-ghost h-auto p-4 text-6xl font-mono font-bold tracking-widest"
-        @click="$emit('open', $props.id)"
-      >
-        {{ formattedTime }}
+      <div v-show="!isUpdated">
+      </div>
+      <button class="btn btn-ghost h-auto p-4 text-6xl font-mono font-bold tracking-widest"
+        @click="$emit('open', $props.id)">
+        <span v-show="!isUpdated" class="loading loading-spinner text-seondary"></span>
+        <span v-show="isUpdated"> {{ formattedTime }} </span>
       </button>
       <div class="card-actions justify-around">
-        <button class="btn btn-ghost" @click="stop">
+        <button class="btn btn-ghost" @click="stop" :disabled="!isUpdated">
           <stop-icon />
           Stop
         </button>
 
-        <button
-          class="btn btn-outline btn-primary"
-          :class="{ hidden: isRunning }"
-          @click="start"
-        >
+        <button class="btn btn-outline btn-primary" :class="{ hidden: isRunning }" @click="start"
+          :disabled="!isUpdated">
           <play-icon />
           Start
         </button>
 
-        <button
-          class="btn btn-outline btn-primary"
-          :class="{ hidden: !isRunning }"
-          @click="pause"
-        >
+        <button class="btn btn-outline btn-primary" :class="{ hidden: !isRunning }" @click="pause"
+          :disabled="!isUpdated">
           <pause-icon />
           Pause
         </button>
@@ -48,8 +43,9 @@ import { io } from "socket.io-client";
 import { ref, onMounted, computed } from "vue";
 
 const elapsed = ref(0);
+const isUpdated = ref(false);
 const isRunning = ref(false);
-const connected = ref(false);
+const isConnected = ref(false);
 const props = defineProps(["id"]);
 const emit = defineEmits(["open"]);
 
@@ -72,6 +68,7 @@ socket.on("timer:elapsed", updateData);
 function updateState(state) {
   isRunning.value = !state.stopped && !state.paused;
   updateData(state);
+  isUpdated.value = true;
 }
 
 function updateData(data) {
@@ -91,15 +88,18 @@ function stop() {
 }
 
 function onConnected() {
-  connected.value = true;
+  isConnected.value = true;
+  isUpdated.value = false;
 }
 
 function onDisconnect() {
-  connected.value = false;
+  isConnected.value = false;
+  isUpdated.value = false;
 }
 
 function onConnectionError() {
-  connected.value = false;
+  isConnected.value = false;
+  isUpdated.value = false;
 }
 
 onMounted(() => {

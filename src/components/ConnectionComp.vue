@@ -2,7 +2,7 @@
     <input type="checkbox" id="modal" class="modal-toggle" :checked="!isConnected" />
     <dialog id="modal" class="modal">
         <div class="modal-box bg-neutral">
-            <span class="loading loading-spinner text-primary"></span>
+            <span class="loading loading-spinner text-seondary"></span>
             <span class="ms-4">Connecting...</span>
         </div>
     </dialog>

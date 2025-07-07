@@ -35,7 +35,6 @@ import CashIcon from "@/components/icons/Cash.vue";
 
 import { useSettingStore } from "@/stores/Setting.js";
 import { useTimerStore } from "@/stores/Timer.js";
-import { useIdStore } from "@/stores/Id.js";
 
 import { ref, computed } from "vue";
 
@@ -57,13 +56,21 @@ const open = function () {
 defineExpose({ close, open });
 
 const cost = computed(() => {
-  return Math.ceil(timerStore.timerList.get(props.timerId).value / 60000) * setting.minuteCost;
+  if (isOpen.value) {
+    return Math.ceil(timerStore.timerList.get(props.timerId).value / 60000) * setting.minuteCost;
+  } else {
+    return 'not avalaible';
+  }
 });
 
 const formattedTime = computed(() => {
-  const seconds = Math.floor(timerStore.timerList.get(props.timerId).value / 1000) % 60;
-  const minutes = Math.floor(timerStore.timerList.get(props.timerId).value / 60000);
+  if (isOpen.value) {
+    const seconds = Math.floor(timerStore.timerList.get(props.timerId).value / 1000) % 60;
+    const minutes = Math.floor(timerStore.timerList.get(props.timerId).value / 60000);
 
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  } else {
+    return 'not avalaible';
+  }
 });
 </script>

@@ -22,14 +22,11 @@ import HeaderComp from "@/components/HeaderComp.vue";
 import TimerAboutComp from "@/components/TimerAboutComp.vue";
 import SettingComp from "@/components/SettingComp.vue";
 
-import { useTimerStore } from "@/stores/Timer.js";
 import { ref } from "vue";
 
 //  template ref
 const timerAbout = ref(null);
 const setting = ref(null);
-
-const timerStore = useTimerStore();
 
 const curretnTimer = ref(null);
 const sessionList = ref([]);
